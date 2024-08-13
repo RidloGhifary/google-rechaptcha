@@ -1,6 +1,7 @@
 "use client";
 
 import sendMessage from "@/actions/send-message";
+import { GetCaptchaToken } from "@/utils/captcha";
 import type { FormEvent } from "react";
 import toast from "react-hot-toast";
 
@@ -13,12 +14,14 @@ export function FormContact() {
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
 
-    const response = await sendMessage({ token: "", formData });
+    const token = await GetCaptchaToken();
+    const response = await sendMessage({ token, formData });
     const { success, message } = response;
     toast.dismiss(loadingToast);
 
     if (success) {
       toast.success(message);
+      form.reset();
     } else {
       toast.error(message);
     }
